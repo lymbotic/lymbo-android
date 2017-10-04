@@ -1,7 +1,6 @@
 package de.interoberlin.lymbo;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -47,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            View view = findViewById(R.id.fab);
+            View view = findViewById(R.id.layoutMain);
             Snackbar.make(view, "Clicked on menu item Setting", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
         }
