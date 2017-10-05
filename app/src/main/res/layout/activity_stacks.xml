@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="de.interoberlin.lymbo.MainActivity">
+    tools:context="de.interoberlin.lymbo.StacksActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -22,6 +22,6 @@
 
     <include
         android:id="@+id/layoutMain"
-        layout="@layout/content_main" />
+        layout="@layout/content_stacks" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -15,11 +15,11 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
-public class MainActivityInstrumentedTest {
+public class StacksActivityInstrumentedTest {
 
     @Rule
-    public ActivityTestRule<MainActivity> mActivityRule =
-            new ActivityTestRule(MainActivity.class);
+    public ActivityTestRule<StacksActivity> mActivityRule =
+            new ActivityTestRule(StacksActivity.class);
 
     @Test
     public void listGoesOverTheFold() {
