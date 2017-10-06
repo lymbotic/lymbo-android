@@ -6,7 +6,6 @@ import android.util.Log
 import com.google.gson.Gson
 import de.interoberlin.lymbo.App
 import de.interoberlin.lymbo.R
-import de.interoberlin.lymbo.StacksActivity
 import de.interoberlin.lymbo.model.Stack
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
@@ -57,9 +56,7 @@ class StacksController private constructor() {
     fun scan() {
         clearStacks()
         findFiles(LYMBO_LOOKUP_PATH, LYMBO_FILE_EXTENSION)?.forEach { f ->
-            Log.i(StacksActivity.TAG, "FILE ${f.absoluteFile}")
             val stack = getStackFromFile(App.instance, f)
-            Log.i(StacksActivity.TAG, "STACK ${stack?.title}")
 
             if (stack != null)
                 addStack(stack)
