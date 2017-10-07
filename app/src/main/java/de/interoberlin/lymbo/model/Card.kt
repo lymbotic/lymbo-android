@@ -1,7 +1,6 @@
 package de.interoberlin.lymbo.model
 
-class Stack {
+class Card {
     var id: String = ""
     var title: String = ""
-    var cards: List<Card> = ArrayList()
 }
