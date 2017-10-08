@@ -24,6 +24,7 @@
         <activity
             android:name=".view.activities.CardsActivity"
             android:label="@string/app_name"
+            android:parentActivityName=".view.activities.StacksActivity"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 

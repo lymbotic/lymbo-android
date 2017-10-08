@@ -27,10 +27,12 @@ class CardsActivity : AppCompatActivity() {
         val lvCards = findViewById(R.id.lvCards) as ListView
 
         setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         title = "Lymbo | ${controller.stack.title}"
 
         val cardsAdapter = CardsListAdapter(this, R.layout.stack, controller.stack.cards)
         lvCards.adapter = cardsAdapter
+
 
         controller.cardsSubject.subscribe { _ ->
             cardsAdapter.notifyDataSetChanged()
