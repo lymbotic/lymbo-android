@@ -1,13 +1,16 @@
 package de.interoberlin.lymbo.view.adapters
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import de.interoberlin.lymbo.R
+import de.interoberlin.lymbo.controller.CardsController
 import de.interoberlin.lymbo.model.Stack
+import de.interoberlin.lymbo.view.activities.CardsActivity
 
 class StacksListAdapter
 (context: Context, private var resource: Int, items: List<Stack>) : ArrayAdapter<Stack>(context, resource, items) {
@@ -39,6 +42,12 @@ class StacksListAdapter
 
             holder.tvTitle = retView.findViewById(R.id.tvTitle) as TextView
             holder.tvTitle!!.text = stack!!.title
+            (holder.tvTitle as TextView).setOnClickListener({ _ ->
+                CardsController.instance.stack = stack
+
+                val activity = Intent(context, CardsActivity::class.java)
+                context.startActivity(activity)
+            })
             holder.position = position
 
             retView.tag = holder

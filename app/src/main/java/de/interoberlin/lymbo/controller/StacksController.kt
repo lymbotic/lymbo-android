@@ -24,8 +24,8 @@ class StacksController private constructor() {
     companion object {
         val TAG = StacksController::class.toString()
 
-        val LYMBO_FILE_EXTENSION: String = App.instance.resources.getString(R.string.lymbo_file_extension)
-        val LYMBO_LOOKUP_PATH: String = App.instance.resources.getString(R.string.lymbo_lookup_path)
+        val LYMBO_FILE_EXTENSION: String = App.context.resources.getString(R.string.lymbo_file_extension)
+        val LYMBO_LOOKUP_PATH: String = App.context.resources.getString(R.string.lymbo_lookup_path)
 
         val instance: StacksController by lazy { Holder.INSTANCE }
     }
@@ -56,7 +56,7 @@ class StacksController private constructor() {
     fun scan() {
         clearStacks()
         findFiles(LYMBO_LOOKUP_PATH, LYMBO_FILE_EXTENSION)?.forEach { f ->
-            val stack = getStackFromFile(App.instance, f)
+            val stack = getStackFromFile(App.context, f)
 
             if (stack != null)
                 addStack(stack)

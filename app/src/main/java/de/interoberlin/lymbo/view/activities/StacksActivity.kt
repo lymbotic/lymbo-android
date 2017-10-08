@@ -1,4 +1,4 @@
-package de.interoberlin.lymbo
+package de.interoberlin.lymbo.view.activities
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -14,6 +14,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.ListView
+import de.interoberlin.lymbo.R
 import de.interoberlin.lymbo.controller.StacksController
 import de.interoberlin.lymbo.view.adapters.StacksListAdapter
 
