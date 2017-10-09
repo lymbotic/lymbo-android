@@ -30,7 +30,7 @@ class CardsActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         title = "Lymbo | ${controller.stack.title}"
 
-        val cardsAdapter = CardsListAdapter(this, R.layout.stack, controller.stack.cards)
+        val cardsAdapter = CardsListAdapter(this, R.layout.card, controller.stack.cards)
         lvCards.adapter = cardsAdapter
 
 
