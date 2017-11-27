@@ -8,16 +8,17 @@
     tools:context="de.interoberlin.lymbo.view.activities.StacksActivity"
     tools:showIn="@layout/activity_stacks">
 
-    <ListView
-        android:id="@+id/lvStacks"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvStacks"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:divider="@color/transparent"></ListView>
+        android:divider="@color/transparent" />
 
     <ImageView
         android:id="@+id/ivSearch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/desc_search"
         android:scaleX="4"
         android:scaleY="4"
         android:src="@drawable/ic_youtube_searched_for_black_24dp"

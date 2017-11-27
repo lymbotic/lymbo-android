@@ -8,10 +8,10 @@
     tools:context="de.interoberlin.lymbo.view.activities.StacksActivity"
     tools:showIn="@layout/activity_stacks">
 
-    <ListView
-        android:id="@+id/lvCards"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvCards"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:divider="@color/transparent"></ListView>
+        android:divider="@color/transparent" />
 
 </android.support.constraint.ConstraintLayout>

@@ -7,16 +7,17 @@ import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
-import android.widget.ListView
 import de.interoberlin.lymbo.R
 import de.interoberlin.lymbo.controller.StacksController
-import de.interoberlin.lymbo.view.adapters.StacksListAdapter
+import de.interoberlin.lymbo.view.adapters.StacksRecyclerViewAdapter
 
 class StacksActivity : AppCompatActivity() {
     companion object {
@@ -32,22 +33,29 @@ class StacksActivity : AppCompatActivity() {
         val main = findViewById(R.id.layoutMain)
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         val ivSearch = findViewById(R.id.ivSearch) as ImageView
-        val lvStacks = findViewById(R.id.lvStacks) as ListView
+        val rvStacks = findViewById(R.id.rvStacks) as RecyclerView
 
         setSupportActionBar(toolbar)
         setTitle(R.string.app_name)
         requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE, 0)
 
         ivSearch.setOnClickListener({ _ ->
-            controller.scan()
+            controller.clearStacks()
+            controller.scanFilesystem()
+            controller.scanAssets()
             showSnackbar(main, "Started scan")
         })
 
-        val stacksAdapter = StacksListAdapter(this, R.layout.stack, controller.stacks)
-        lvStacks.emptyView = findViewById(R.id.ivSearch)
-        lvStacks.adapter = stacksAdapter
+        val stacksAdapter = StacksRecyclerViewAdapter(controller.stacks)
+        rvStacks.layoutManager = LinearLayoutManager(this)
+        rvStacks.adapter = stacksAdapter
 
         controller.stacksSubject.subscribe { _ ->
+            if (stacksAdapter.itemCount == 0) {
+                ivSearch.visibility = View.VISIBLE
+            } else {
+                ivSearch.visibility = View.GONE
+            }
             stacksAdapter.notifyDataSetChanged()
         }
     }

@@ -17,5 +17,15 @@ class CardsController private constructor() {
     }
 
     var stack: Stack = Stack()
-    var cardsSubject: Subject<Card> = PublishSubject.create()
+    var cardsSubject: Subject<List<Card>> = PublishSubject.create()
+
+    /**
+     * Adds a card to the current stack
+     *
+     * @param card card to be added
+     */
+    fun addCard(card: Card) {
+        stack.cards.add(card)
+        cardsSubject.onNext(stack.cards)
+    }
 }

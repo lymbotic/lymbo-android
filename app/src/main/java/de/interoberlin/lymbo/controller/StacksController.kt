@@ -5,6 +5,7 @@ import android.os.Environment
 import android.util.Log
 import com.google.gson.Gson
 import de.interoberlin.lymbo.App
+import de.interoberlin.lymbo.App.Companion.context
 import de.interoberlin.lymbo.R
 import de.interoberlin.lymbo.model.Stack
 import io.reactivex.subjects.PublishSubject
@@ -36,7 +37,7 @@ class StacksController private constructor() {
     /**
      * Clears stacks
      */
-    private fun clearStacks() {
+    fun clearStacks() {
         stacks.clear()
     }
 
@@ -53,8 +54,10 @@ class StacksController private constructor() {
     /**
      * Scans for lymbo files in storage
      */
-    fun scan() {
-        clearStacks()
+    fun scanFilesystem() {
+        Log.i(TAG, LYMBO_LOOKUP_PATH)
+        Log.i(TAG, LYMBO_FILE_EXTENSION)
+
         findFiles(LYMBO_LOOKUP_PATH, LYMBO_FILE_EXTENSION)?.forEach { f ->
             val stack = getStackFromFile(App.context, f)
 
@@ -63,17 +66,49 @@ class StacksController private constructor() {
         }
     }
 
+    fun scanAssets() {
+        try {
+            findAssets().forEach { asset ->
+                val stack = getStackFromAsset(context, asset)
+
+                if (stack != null)
+                    addStack(stack)
+            }
+        } catch (ioe: IOException) {
+            Log.e(TAG, ioe.toString())
+        }
+    }
+
+    private fun getStackFromAsset(context: Context, fileName: String): Stack? {
+        if (fileName.endsWith(context.resources.getString(R.string.lymbo_file_extension))) {
+            try {
+                val inputStream = context.assets.open(fileName)
+                val stack = getStackFromInputStream(inputStream)
+                if (stack != null) {
+                    return stack
+                }
+            } catch (e: IOException) {
+                Log.e(TAG, e.toString())
+                e.printStackTrace()
+            }
+        }
+
+        return null
+    }
+
     /**
-     * Finds all files that match a certain pattern in a specific directory on the internal storage
+     * Finds all files that match a certain pattern in a specific directory on the external storage
      *
      * @param dir        directory to look for files
      * @return collection of files
      */
-    private fun findFiles(dir: String, extension: String): MutableCollection<File>? = if (checkStorage()) {
+    private fun findFiles(dir: String, extension: String): MutableCollection<File>? = if (checkStorage() && File(Environment.getExternalStorageDirectory().absoluteFile.toString() + "/" + dir).exists()) {
         FileUtils.listFiles(File(Environment.getExternalStorageDirectory().absoluteFile.toString() + "/" + dir), RegexFileFilter(".*$extension"), TrueFileFilter.TRUE)
     } else {
         ArrayList()
     }
+
+    private fun findAssets(): Array<String> = App.context.assets.list("")
 
     /**
      * Checks if storage is available
