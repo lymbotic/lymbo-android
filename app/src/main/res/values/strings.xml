@@ -8,4 +8,6 @@
     <string name="ph_front_title">Front title</string>
     <string name="ph_back_title">Back title</string>
     <string name="desc_search">Search for lymbo files</string>
+    <string name="ph_title">title</string>
+    <string name="lbl_add_stack">Add Stack</string>
 </resources>

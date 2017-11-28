@@ -46,7 +46,7 @@ class StacksController private constructor() {
      *
      * @param stack   stack to be added
      */
-    private fun addStack(stack: Stack) {
+    fun addStack(stack: Stack) {
         stacks.add(stack)
         stacksSubject.onNext(stack)
     }

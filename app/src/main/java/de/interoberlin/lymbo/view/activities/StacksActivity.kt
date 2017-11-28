@@ -3,6 +3,7 @@ package de.interoberlin.lymbo.view.activities
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
@@ -18,6 +19,8 @@ import android.widget.ImageView
 import de.interoberlin.lymbo.R
 import de.interoberlin.lymbo.controller.StacksController
 import de.interoberlin.lymbo.view.adapters.StacksRecyclerViewAdapter
+import de.interoberlin.lymbo.view.dialogs.CardAddDialog
+import de.interoberlin.lymbo.view.dialogs.StackAddDialog
 
 class StacksActivity : AppCompatActivity() {
     companion object {
@@ -32,12 +35,24 @@ class StacksActivity : AppCompatActivity() {
 
         val main = findViewById(R.id.layoutMain)
         val toolbar = findViewById(R.id.toolbar) as Toolbar
+        val fab = findViewById(R.id.fab) as FloatingActionButton
         val ivSearch = findViewById(R.id.ivSearch) as ImageView
         val rvStacks = findViewById(R.id.rvStacks) as RecyclerView
 
         setSupportActionBar(toolbar)
         setTitle(R.string.app_name)
         requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE, 0)
+
+        fab.setOnClickListener { _ ->
+            val dialog = StackAddDialog()
+            val bundle = Bundle()
+            dialog.arguments = bundle
+            dialog.isCancelable = false
+            dialog.stackAddSubject.subscribe { stack ->
+                controller.addStack(stack)
+            }
+            dialog.show(fragmentManager, CardAddDialog.TAG)
+        }
 
         ivSearch.setOnClickListener({ _ ->
             controller.clearStacks()

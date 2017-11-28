@@ -18,7 +18,7 @@ class CardAddDialog : DialogFragment() {
         val TAG = CardAddDialog::class.toString()
     }
 
-    val title = "Add card"
+    val dialogTitle = "Add card"
     val cardAddSubject: Subject<Card> = PublishSubject.create()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -26,7 +26,7 @@ class CardAddDialog : DialogFragment() {
 
         val builder = AlertDialog.Builder(activity)
         builder.setView(v)
-        builder.setTitle(title)
+        builder.setTitle(dialogTitle)
 
         builder.setPositiveButton(R.string.lbl_add_card, { dialog, _ ->
             val view = dialog as AlertDialog
