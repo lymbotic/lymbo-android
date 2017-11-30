@@ -32,14 +32,17 @@ class StacksRecyclerViewAdapter(items: MutableList<Stack>) : RecyclerView.Adapte
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var view: LinearLayout = itemView as LinearLayout
         var tvTitle: TextView? = null
+        var tvSubTitle: TextView? = null
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.stack, parent, false)
         val tvTitle = view.findViewById(R.id.tvTitle) as TextView
+        val tvSubTitle = view.findViewById(R.id.tvSubTitle) as TextView
 
         val holder = ViewHolder(view)
         holder.tvTitle = tvTitle
+        holder.tvSubTitle = tvSubTitle
 
         return holder
     }
@@ -55,6 +58,7 @@ class StacksRecyclerViewAdapter(items: MutableList<Stack>) : RecyclerView.Adapte
             context.startActivity(activity)
         })
         holder.tvTitle?.text = stack.title
+        holder.tvSubTitle?.text = "${stack.cards.size} cards"
     }
 
     override fun getItemCount(): Int = items.size

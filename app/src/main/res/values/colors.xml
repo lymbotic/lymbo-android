@@ -5,4 +5,6 @@
     <color name="colorAccent">#FFC107</color>
 
     <color name="transparent">#00FF0000</color>
+
+    <color name="colorSubtitle">#89000000</color>
 </resources>
