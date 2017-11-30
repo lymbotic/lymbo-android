@@ -15,4 +15,9 @@
     <string name="update_card">Update card</string>
     <string name="add_card">Add card</string>
     <string name="lbl_update_card">Update card</string>
+    <string name="bundle_value">bundle_value</string>
+    <string name="bundle_stack">bundle_stack</string>
+    <string name="update_stack">Update stack</string>
+    <string name="add_stack">Add stack</string>
+    <string name="lbl_update_stack">Update stack</string>
 </resources>

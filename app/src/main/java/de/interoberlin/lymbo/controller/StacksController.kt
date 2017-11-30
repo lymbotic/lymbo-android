@@ -48,7 +48,18 @@ class StacksController private constructor() {
      */
     fun addStack(stack: Stack) {
         stacks.add(stack)
-        stacksSubject.onNext(stacks.size -1)
+        stacksSubject.onNext(stacks.size - 1)
+    }
+
+    /**
+     * Updates an existing stack
+     *
+     * @param stack stack to be updated
+     */
+    fun updateStack(position: Int, stack: Stack) {
+        stacks.removeAt(position)
+        stacks.add(position, stack)
+        stacksSubject.onNext(position)
     }
 
     /**

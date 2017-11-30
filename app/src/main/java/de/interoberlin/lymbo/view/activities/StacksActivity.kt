@@ -20,7 +20,7 @@ import de.interoberlin.lymbo.R
 import de.interoberlin.lymbo.controller.StacksController
 import de.interoberlin.lymbo.view.adapters.StacksRecyclerViewAdapter
 import de.interoberlin.lymbo.view.dialogs.CardDialog
-import de.interoberlin.lymbo.view.dialogs.StackAddDialog
+import de.interoberlin.lymbo.view.dialogs.StackDialog
 
 class StacksActivity : AppCompatActivity() {
     companion object {
@@ -49,7 +49,7 @@ class StacksActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         fab.setOnClickListener { _ ->
-            val dialog = StackAddDialog()
+            val dialog = StackDialog()
             val bundle = Bundle()
             dialog.arguments = bundle
             dialog.isCancelable = false

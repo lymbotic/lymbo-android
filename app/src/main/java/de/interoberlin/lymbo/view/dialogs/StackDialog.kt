@@ -6,39 +6,58 @@ import android.app.DialogFragment
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
+import com.google.gson.Gson
+import de.interoberlin.lymbo.App
 import de.interoberlin.lymbo.R
+import de.interoberlin.lymbo.model.DialogType
 import de.interoberlin.lymbo.model.Stack
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import java.util.*
 
-class StackAddDialog : DialogFragment() {
+class StackDialog : DialogFragment() {
     companion object {
-        // val TAG = StackAddDialog::class.toString()
+        // val TAG = StackDialog::class.toString()
     }
 
-    val dialogTitle = "Add Stack"
+    private var mode = DialogType.NONE
+    private var dialogTitle = ""
+    private var positiveButton = 0
+
     val stackAddSubject: Subject<Stack> = PublishSubject.create()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val v = View.inflate(activity, R.layout.dialog_stack_add, null)
+        val bundleStack = arguments.getString(App.context.resources.getString(R.string.bundle_stack))
+        var stack = Gson().fromJson(bundleStack, Stack::class.java)
 
+        if (stack != null) {
+            mode = DialogType.UPDATE
+            dialogTitle = App.context.resources.getString(R.string.update_stack)
+            positiveButton = R.string.lbl_update_stack
+        } else {
+            mode = DialogType.ADD
+            dialogTitle = App.context.resources.getString(R.string.add_stack)
+            positiveButton = R.string.lbl_add_stack
+
+            stack = Stack()
+            stack.id = UUID.randomUUID().toString()
+        }
+
+        val v = View.inflate(activity, R.layout.dialog_stack, null)
         val builder = AlertDialog.Builder(activity)
         builder.setView(v)
         builder.setTitle(dialogTitle)
 
-        builder.setPositiveButton(R.string.lbl_add_stack, { dialog, _ ->
-            val view = dialog as AlertDialog
-            val etTitle = view.findViewById(R.id.etTitle) as EditText
+        val etTitle = v.findViewById(R.id.etTitle) as EditText
 
+        etTitle.setText(stack.title)
+
+        builder.setPositiveButton(positiveButton, { _, _ ->
             val title = etTitle.text.toString().trim { it <= ' ' }
 
             when {
                 title.isEmpty() -> etTitle.error = activity.resources.getString(R.string.msg_field_must_not_be_empty)
                 else -> {
-                    val stack = Stack()
-
-                    stack.id = UUID.randomUUID().toString()
                     stack.title = title
 
                     stackAddSubject.onNext(stack)
