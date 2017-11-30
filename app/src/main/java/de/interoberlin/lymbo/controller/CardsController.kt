@@ -27,7 +27,7 @@ class CardsController private constructor() {
      */
     fun addCard(card: Card) {
         cards.add(card)
-        cardsSubject.onNext(cards.size - 1)
+        cardsSubject.onNext(cards.size)
     }
 
     /**
@@ -38,6 +38,16 @@ class CardsController private constructor() {
     fun updateCard(position: Int, card: Card) {
         cards.removeAt(position)
         cards.add(position, card)
+        cardsSubject.onNext(position)
+    }
+
+    /**
+     * Deletes an existing card
+     *
+     * @param card card to be deleted
+     */
+    fun deleteCard(position: Int, card: Card) {
+        cards.removeAt(position)
         cardsSubject.onNext(position)
     }
 }

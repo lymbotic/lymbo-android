@@ -33,11 +33,11 @@ class StackDialog : DialogFragment() {
         if (stack != null) {
             mode = DialogType.UPDATE
             dialogTitle = App.context.resources.getString(R.string.update_stack)
-            positiveButton = R.string.lbl_update_stack
+            positiveButton = R.string.update_stack
         } else {
             mode = DialogType.ADD
             dialogTitle = App.context.resources.getString(R.string.add_stack)
-            positiveButton = R.string.lbl_add_stack
+            positiveButton = R.string.add_stack
 
             stack = Stack()
             stack.id = UUID.randomUUID().toString()
@@ -56,7 +56,7 @@ class StackDialog : DialogFragment() {
             val title = etTitle.text.toString().trim { it <= ' ' }
 
             when {
-                title.isEmpty() -> etTitle.error = activity.resources.getString(R.string.msg_field_must_not_be_empty)
+                title.isEmpty() -> etTitle.error = activity.resources.getString(R.string.field_must_not_be_empty)
                 else -> {
                     stack.title = title
 
@@ -66,7 +66,7 @@ class StackDialog : DialogFragment() {
             }
         })
 
-        builder.setNegativeButton(R.string.lbl_cancel, { _, _ -> dismiss() })
+        builder.setNegativeButton(R.string.cancel, { _, _ -> dismiss() })
 
         return builder.create()
     }

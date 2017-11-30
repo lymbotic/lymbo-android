@@ -16,7 +16,6 @@ import de.interoberlin.lymbo.controller.CardsController
 import de.interoberlin.lymbo.view.adapters.CardsRecyclerViewAdapter
 import de.interoberlin.lymbo.view.dialogs.CardDialog
 
-
 class CardsActivity : AppCompatActivity() {
     companion object {
         // val TAG = CardsActivity::class.toString()
@@ -56,8 +55,12 @@ class CardsActivity : AppCompatActivity() {
             dialog.show(fragmentManager, CardDialog.TAG)
         }
 
-        controller.cardsSubject.subscribe { position ->
-            cardsAdapter.notifyItemChanged(position)
+        controller.cardsSubject.subscribe { _ ->
+            rvCards.adapter = null
+            rvCards.layoutManager = null
+            rvCards.adapter = cardsAdapter
+            rvCards.layoutManager = LinearLayoutManager(this)
+            cardsAdapter.notifyDataSetChanged()
         }
     }
 

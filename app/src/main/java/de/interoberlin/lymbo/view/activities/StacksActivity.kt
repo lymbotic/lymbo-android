@@ -16,6 +16,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
+import de.interoberlin.lymbo.BuildConfig
 import de.interoberlin.lymbo.R
 import de.interoberlin.lymbo.controller.StacksController
 import de.interoberlin.lymbo.view.adapters.StacksRecyclerViewAdapter
@@ -62,7 +63,9 @@ class StacksActivity : AppCompatActivity() {
         ivSearch.setOnClickListener({ _ ->
             controller.clearStacks()
             controller.scanFilesystem()
-            controller.scanAssets()
+            if (BuildConfig.DEBUG) {
+                controller.scanAssets()
+            }
             showSnackbar(main, "Started scan")
         })
 

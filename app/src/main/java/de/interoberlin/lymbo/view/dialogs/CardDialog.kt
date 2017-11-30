@@ -34,11 +34,11 @@ class CardDialog : DialogFragment() {
         if (card != null) {
             mode = DialogType.UPDATE
             dialogTitle = App.context.resources.getString(R.string.update_card)
-            positiveButton = R.string.lbl_update_card
+            positiveButton = R.string.update_card
         } else {
             mode = DialogType.ADD
             dialogTitle = App.context.resources.getString(R.string.add_card)
-            positiveButton = R.string.lbl_add_card
+            positiveButton = R.string.add_card
 
             card = Card()
             card.id = UUID.randomUUID().toString()
@@ -46,7 +46,7 @@ class CardDialog : DialogFragment() {
             card.sides.add(Side())
         }
 
-        val v = View.inflate(activity, R.layout.dialog_card_add, null)
+        val v = View.inflate(activity, R.layout.dialog_card, null)
         val builder = AlertDialog.Builder(activity)
         builder.setView(v)
         builder.setTitle(dialogTitle)
@@ -62,8 +62,8 @@ class CardDialog : DialogFragment() {
             val backTitle = etBackTitle.text.toString().trim { it <= ' ' }
 
             when {
-                frontTitle.isEmpty() -> etFrontTitle.error = activity.resources.getString(R.string.msg_field_must_not_be_empty)
-                backTitle.isEmpty() -> etBackTitle.error = activity.resources.getString(R.string.msg_field_must_not_be_empty)
+                frontTitle.isEmpty() -> etFrontTitle.error = activity.resources.getString(R.string.field_must_not_be_empty)
+                backTitle.isEmpty() -> etBackTitle.error = activity.resources.getString(R.string.field_must_not_be_empty)
                 else -> {
                     card.sides[0].title = frontTitle
                     card.sides[1].title = backTitle
@@ -74,7 +74,7 @@ class CardDialog : DialogFragment() {
             }
         })
 
-        builder.setNegativeButton(R.string.lbl_cancel, { _, _ -> dismiss() })
+        builder.setNegativeButton(R.string.cancel, { _, _ -> dismiss() })
 
         return builder.create()
     }

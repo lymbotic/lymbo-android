@@ -19,6 +19,7 @@ import de.interoberlin.lymbo.R
 import de.interoberlin.lymbo.controller.CardsController
 import de.interoberlin.lymbo.model.Card
 import de.interoberlin.lymbo.view.dialogs.CardDialog
+import de.interoberlin.lymbo.view.dialogs.ConfirmationDialog
 
 
 class CardsRecyclerViewAdapter(items: MutableList<Card>) : RecyclerView.Adapter<CardsRecyclerViewAdapter.ViewHolder>() {
@@ -57,7 +58,24 @@ class CardsRecyclerViewAdapter(items: MutableList<Card>) : RecyclerView.Adapter<
         val card = items[position]
 
         holder.rlContent?.setOnCreateContextMenuListener { contextMenu: ContextMenu, _, _ ->
-            contextMenu.add(0, 0, 0, context.resources.getString(R.string.edit))
+            contextMenu.add(0, 0, 0, context.resources.getString(R.string.delete))
+                    .setOnMenuItemClickListener { _ ->
+                        val dialog = ConfirmationDialog()
+                        val bundle = Bundle()
+                        bundle.putString(context.resources.getString(R.string.bundle_title), context.resources.getString(R.string.delete_card))
+                        bundle.putString(context.resources.getString(R.string.bundle_text), context.resources.getString(R.string.delete_card_question))
+                        bundle.putString(context.resources.getString(R.string.bundle_action), context.resources.getString(R.string.delete))
+                        bundle.putString(context.resources.getString(R.string.bundle_value), Gson().toJson(card))
+                        dialog.arguments = bundle
+                        dialog.isCancelable = false
+                        dialog.resultSubject.subscribe { result ->
+                            if (result != null)
+                                controller.deleteCard(position, Gson().fromJson(result.toString(), Card::class.java))
+                        }
+                        dialog.show((holder.view?.context as Activity).fragmentManager, CardDialog.TAG)
+                        false
+                    }
+            contextMenu.add(0, 0, 1, context.resources.getString(R.string.edit))
                     .setOnMenuItemClickListener { _ ->
                         val dialog = CardDialog()
                         val bundle = Bundle()
