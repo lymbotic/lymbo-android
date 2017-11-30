@@ -10,21 +10,28 @@ import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import de.interoberlin.lymbo.App.Companion.context
 import de.interoberlin.lymbo.R
 import de.interoberlin.lymbo.controller.CardsController
 import de.interoberlin.lymbo.view.adapters.CardsRecyclerViewAdapter
-import de.interoberlin.lymbo.view.dialogs.CardAddDialog
+import de.interoberlin.lymbo.view.dialogs.CardDialog
 
 
 class CardsActivity : AppCompatActivity() {
     companion object {
         // val TAG = CardsActivity::class.toString()
-        val controller = CardsController.instance
     }
+
+    private val controller = CardsController.instance
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cards)
+        title = "${context.resources.getString(R.string.app_name)} | ${controller.stackTitle}"
+    }
+
+    override fun onResume() {
+        super.onResume()
 
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         val fab = findViewById(R.id.fab) as FloatingActionButton
@@ -32,25 +39,25 @@ class CardsActivity : AppCompatActivity() {
 
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        title = "Lymbo | ${controller.stack.title}"
 
-        val cardsAdapter = CardsRecyclerViewAdapter(controller.stack.cards)
+        val cardsAdapter = CardsRecyclerViewAdapter(controller.cards)
         rvCards.layoutManager = LinearLayoutManager(this)
         rvCards.adapter = cardsAdapter
 
         fab.setOnClickListener { _ ->
-            val dialog = CardAddDialog()
+            val dialog = CardDialog()
             val bundle = Bundle()
+            bundle.putString(context.resources.getString(R.string.bundle_card), null)
             dialog.arguments = bundle
             dialog.isCancelable = false
             dialog.cardAddSubject.subscribe { card ->
                 controller.addCard(card)
             }
-            dialog.show(fragmentManager, CardAddDialog.TAG)
+            dialog.show(fragmentManager, CardDialog.TAG)
         }
 
-        controller.cardsSubject.subscribe { _ ->
-            cardsAdapter.notifyDataSetChanged()
+        controller.cardsSubject.subscribe { position ->
+            cardsAdapter.notifyItemChanged(position)
         }
     }
 
@@ -64,7 +71,7 @@ class CardsActivity : AppCompatActivity() {
 
         if (id == R.id.action_settings) {
             val main = findViewById(R.id.layoutMain)
-            showSnackbar(main, "Clicked on menu item Setting")
+            showSnackbar(main, "Clicked on menu item Settings")
         }
 
         return super.onOptionsItemSelected(item)

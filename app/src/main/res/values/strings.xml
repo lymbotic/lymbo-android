@@ -10,4 +10,9 @@
     <string name="desc_search">Search for lymbo files</string>
     <string name="ph_title">title</string>
     <string name="lbl_add_stack">Add Stack</string>
+    <string name="bundle_card">bundle_card</string>
+    <string name="edit">Edit</string>
+    <string name="update_card">Update card</string>
+    <string name="add_card">Add card</string>
+    <string name="lbl_update_card">Update card</string>
 </resources>

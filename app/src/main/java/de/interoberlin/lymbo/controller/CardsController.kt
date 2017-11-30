@@ -1,9 +1,9 @@
 package de.interoberlin.lymbo.controller
 
 import de.interoberlin.lymbo.model.Card
-import de.interoberlin.lymbo.model.Stack
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
+import java.util.*
 
 class CardsController private constructor() {
     private object Holder {
@@ -16,8 +16,9 @@ class CardsController private constructor() {
         val instance: CardsController by lazy { Holder.INSTANCE }
     }
 
-    var stack: Stack = Stack()
-    var cardsSubject: Subject<List<Card>> = PublishSubject.create()
+    var stackTitle = ""
+    var cards: MutableList<Card> = ArrayList()
+    var cardsSubject: Subject<Int> = PublishSubject.create()
 
     /**
      * Adds a card to the current stack
@@ -25,7 +26,18 @@ class CardsController private constructor() {
      * @param card card to be added
      */
     fun addCard(card: Card) {
-        stack.cards.add(card)
-        cardsSubject.onNext(stack.cards)
+        cards.add(card)
+        cardsSubject.onNext(cards.size - 1)
+    }
+
+    /**
+     * Updates an existing card
+     *
+     * @param card card to be updated
+     */
+    fun updateCard(position: Int, card: Card) {
+        cards.removeAt(position)
+        cards.add(position, card)
+        cardsSubject.onNext(position)
     }
 }

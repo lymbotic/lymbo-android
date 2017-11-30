@@ -14,6 +14,7 @@ import de.interoberlin.lymbo.controller.CardsController
 import de.interoberlin.lymbo.model.Stack
 import de.interoberlin.lymbo.view.activities.CardsActivity
 
+
 class StacksRecyclerViewAdapter(items: MutableList<Stack>) : RecyclerView.Adapter<StacksRecyclerViewAdapter.ViewHolder>() {
     companion object {
         // val TAG = StacksRecyclerViewAdapter::class.toString()
@@ -47,7 +48,8 @@ class StacksRecyclerViewAdapter(items: MutableList<Stack>) : RecyclerView.Adapte
         val stack = items[position]
 
         holder.view.setOnClickListener({ _ ->
-            controller.stack = items[position]
+            controller.stackTitle = items[position].title
+            controller.cards = items[position].cards
 
             val activity = Intent(context, CardsActivity::class.java)
             context.startActivity(activity)

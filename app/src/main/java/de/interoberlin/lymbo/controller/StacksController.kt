@@ -32,7 +32,7 @@ class StacksController private constructor() {
     }
 
     var stacks: MutableList<Stack> = ArrayList()
-    var stacksSubject: Subject<Stack> = PublishSubject.create()
+    var stacksSubject: Subject<Int> = PublishSubject.create()
 
     /**
      * Clears stacks
@@ -48,16 +48,13 @@ class StacksController private constructor() {
      */
     fun addStack(stack: Stack) {
         stacks.add(stack)
-        stacksSubject.onNext(stack)
+        stacksSubject.onNext(stacks.size -1)
     }
 
     /**
      * Scans for lymbo files in storage
      */
     fun scanFilesystem() {
-        Log.i(TAG, LYMBO_LOOKUP_PATH)
-        Log.i(TAG, LYMBO_FILE_EXTENSION)
-
         findFiles(LYMBO_LOOKUP_PATH, LYMBO_FILE_EXTENSION)?.forEach { f ->
             val stack = getStackFromFile(App.context, f)
 

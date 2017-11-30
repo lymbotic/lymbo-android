@@ -19,7 +19,7 @@ import android.widget.ImageView
 import de.interoberlin.lymbo.R
 import de.interoberlin.lymbo.controller.StacksController
 import de.interoberlin.lymbo.view.adapters.StacksRecyclerViewAdapter
-import de.interoberlin.lymbo.view.dialogs.CardAddDialog
+import de.interoberlin.lymbo.view.dialogs.CardDialog
 import de.interoberlin.lymbo.view.dialogs.StackAddDialog
 
 class StacksActivity : AppCompatActivity() {
@@ -31,7 +31,14 @@ class StacksActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_stacks)
+        setTitle(R.string.app_name)
+        requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE, 0)
+    }
+
+    override fun onResume() {
+        super.onResume()
 
         val main = findViewById(R.id.layoutMain)
         val toolbar = findViewById(R.id.toolbar) as Toolbar
@@ -40,8 +47,6 @@ class StacksActivity : AppCompatActivity() {
         val rvStacks = findViewById(R.id.rvStacks) as RecyclerView
 
         setSupportActionBar(toolbar)
-        setTitle(R.string.app_name)
-        requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE, 0)
 
         fab.setOnClickListener { _ ->
             val dialog = StackAddDialog()
@@ -51,7 +56,7 @@ class StacksActivity : AppCompatActivity() {
             dialog.stackAddSubject.subscribe { stack ->
                 controller.addStack(stack)
             }
-            dialog.show(fragmentManager, CardAddDialog.TAG)
+            dialog.show(fragmentManager, CardDialog.TAG)
         }
 
         ivSearch.setOnClickListener({ _ ->
@@ -65,13 +70,20 @@ class StacksActivity : AppCompatActivity() {
         rvStacks.layoutManager = LinearLayoutManager(this)
         rvStacks.adapter = stacksAdapter
 
+        if (controller.stacks.size > 0) {
+            ivSearch.visibility = View.GONE
+        } else {
+            ivSearch.visibility = View.VISIBLE
+        }
+
         controller.stacksSubject.subscribe { _ ->
-            if (stacksAdapter.itemCount == 0) {
-                ivSearch.visibility = View.VISIBLE
-            } else {
-                ivSearch.visibility = View.GONE
-            }
             stacksAdapter.notifyDataSetChanged()
+
+            if (controller.stacks.size > 0) {
+                ivSearch.visibility = View.GONE
+            } else {
+                ivSearch.visibility = View.VISIBLE
+            }
         }
     }
 

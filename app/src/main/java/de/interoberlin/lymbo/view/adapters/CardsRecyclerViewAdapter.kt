@@ -1,7 +1,10 @@
 package de.interoberlin.lymbo.view.adapters
 
+import android.app.Activity
 import android.content.Context
+import android.os.Bundle
 import android.support.v7.widget.RecyclerView
+import android.view.ContextMenu
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.INVISIBLE
@@ -10,21 +13,24 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
+import com.google.gson.Gson
 import de.interoberlin.lymbo.App.Companion.context
 import de.interoberlin.lymbo.R
+import de.interoberlin.lymbo.controller.CardsController
 import de.interoberlin.lymbo.model.Card
+import de.interoberlin.lymbo.view.dialogs.CardDialog
 
 
 class CardsRecyclerViewAdapter(items: MutableList<Card>) : RecyclerView.Adapter<CardsRecyclerViewAdapter.ViewHolder>() {
     companion object {
         // val TAG = CardsRecyclerViewAdapter::class.toString()
-        // val controller = CardsController.instance
+        val controller = CardsController.instance
     }
 
     private var items: MutableList<Card> = ArrayList()
     private var vi: LayoutInflater
 
-    private var activeSideIndex = 0
+    private var activeSideIndex: Int = 0
 
     init {
         this.items = items
@@ -32,6 +38,7 @@ class CardsRecyclerViewAdapter(items: MutableList<Card>) : RecyclerView.Adapter<
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var view: View? = null
         var rlContent: RelativeLayout? = null
     }
 
@@ -40,6 +47,7 @@ class CardsRecyclerViewAdapter(items: MutableList<Card>) : RecyclerView.Adapter<
         val rlContent = view.findViewById(R.id.rlContent) as RelativeLayout
 
         val holder = ViewHolder(view)
+        holder.view = view
         holder.rlContent = rlContent
 
         return holder
@@ -47,6 +55,22 @@ class CardsRecyclerViewAdapter(items: MutableList<Card>) : RecyclerView.Adapter<
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val card = items[position]
+
+        holder.rlContent?.setOnCreateContextMenuListener { contextMenu: ContextMenu, _, _ ->
+            contextMenu.add(0, 0, 0, context.resources.getString(R.string.edit))
+                    .setOnMenuItemClickListener { _ ->
+                        val dialog = CardDialog()
+                        val bundle = Bundle()
+                        bundle.putString(context.resources.getString(R.string.bundle_card), Gson().toJson(card))
+                        dialog.arguments = bundle
+                        dialog.isCancelable = false
+                        dialog.cardAddSubject.subscribe { card ->
+                            controller.updateCard(position, card)
+                        }
+                        dialog.show((holder.view?.context as Activity).fragmentManager, CardDialog.TAG)
+                        false
+                    }
+        }
 
         card.sides.forEach { s ->
             val li = LayoutInflater.from(context)
