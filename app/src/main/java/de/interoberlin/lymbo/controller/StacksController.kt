@@ -63,6 +63,16 @@ class StacksController private constructor() {
     }
 
     /**
+     * Deletes an existing stack
+     *
+     * @param stack stack to be deleted
+     */
+    fun deleteStack(position: Int, stack: Stack) {
+        stacks.removeAt(position)
+        stacksSubject.onNext(position)
+    }
+
+    /**
      * Scans for lymbo files in storage
      */
     fun scanFilesystem() {
