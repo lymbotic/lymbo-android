@@ -16,7 +16,6 @@ import de.interoberlin.lymbo.App.Companion.context
 import de.interoberlin.lymbo.R
 import de.interoberlin.lymbo.controller.CardsController
 import de.interoberlin.lymbo.controller.StacksController
-import de.interoberlin.lymbo.model.Card
 import de.interoberlin.lymbo.model.Stack
 import de.interoberlin.lymbo.view.activities.CardsActivity
 import de.interoberlin.lymbo.view.dialogs.CardDialog
@@ -74,7 +73,7 @@ class StacksRecyclerViewAdapter(items: MutableList<Stack>) : RecyclerView.Adapte
                             if (result != null)
                                 controller.deleteStack(position, Gson().fromJson(result.toString(), Stack::class.java))
                         }
-                        dialog.show((holder.view?.context as Activity).fragmentManager, CardDialog.TAG)
+                        dialog.show((holder.view.context as Activity).fragmentManager, CardDialog.TAG)
                         false
                     }
             contextMenu.add(0, 0, 1, context.resources.getString(R.string.edit))
