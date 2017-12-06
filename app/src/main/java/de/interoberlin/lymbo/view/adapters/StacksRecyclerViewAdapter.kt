@@ -59,36 +59,41 @@ class StacksRecyclerViewAdapter(items: MutableList<Stack>) : RecyclerView.Adapte
         val stack = items[position]
 
         holder.view.setOnCreateContextMenuListener { contextMenu: ContextMenu, _, _ ->
-            contextMenu.add(0, 0, 0, context.resources.getString(R.string.delete))
-                    .setOnMenuItemClickListener { _ ->
-                        val dialog = ConfirmationDialog()
-                        val bundle = Bundle()
-                        bundle.putString(context.resources.getString(R.string.bundle_title), context.resources.getString(R.string.delete_stack))
-                        bundle.putString(context.resources.getString(R.string.bundle_text), context.resources.getString(R.string.delete_stack_question))
-                        bundle.putString(context.resources.getString(R.string.bundle_action), context.resources.getString(R.string.delete))
-                        bundle.putString(context.resources.getString(R.string.bundle_value), Gson().toJson(stack))
-                        dialog.arguments = bundle
-                        dialog.isCancelable = false
-                        dialog.resultSubject.subscribe { result ->
-                            if (result != null)
-                                controller.deleteStack(position, Gson().fromJson(result.toString(), Stack::class.java))
+            if (!stack.fileName.isEmpty()) {
+                contextMenu.add(0, 0, 0, context.resources.getString(R.string.delete))
+                        .setOnMenuItemClickListener { _ ->
+                            val dialog = ConfirmationDialog()
+                            val bundle = Bundle()
+                            bundle.putString(context.resources.getString(R.string.bundle_title), context.resources.getString(R.string.delete_stack))
+                            bundle.putString(context.resources.getString(R.string.bundle_text), context.resources.getString(R.string.delete_stack_question))
+                            bundle.putString(context.resources.getString(R.string.bundle_action), context.resources.getString(R.string.delete))
+                            bundle.putString(context.resources.getString(R.string.bundle_value), Gson().toJson(stack))
+                            dialog.arguments = bundle
+                            dialog.isCancelable = false
+                            dialog.resultSubject.subscribe { result ->
+                                if (result != null)
+                                    controller.deleteStack(position, stack)
+                            }
+                            dialog.show((holder.view.context as Activity).fragmentManager, CardDialog.TAG)
+                            false
                         }
-                        dialog.show((holder.view.context as Activity).fragmentManager, CardDialog.TAG)
-                        false
-                    }
-            contextMenu.add(0, 0, 1, context.resources.getString(R.string.edit))
-                    .setOnMenuItemClickListener { _ ->
-                        val dialog = StackDialog()
-                        val bundle = Bundle()
-                        bundle.putString(context.resources.getString(R.string.bundle_stack), Gson().toJson(stack))
-                        dialog.arguments = bundle
-                        dialog.isCancelable = false
-                        dialog.stackAddSubject.subscribe { stack ->
-                            controller.updateStack(position, stack)
+            }
+
+            if (!stack.fileName.isEmpty()) {
+                contextMenu.add(0, 0, 1, context.resources.getString(R.string.edit))
+                        .setOnMenuItemClickListener { _ ->
+                            val dialog = StackDialog()
+                            val bundle = Bundle()
+                            bundle.putString(context.resources.getString(R.string.bundle_stack), Gson().toJson(stack))
+                            dialog.arguments = bundle
+                            dialog.isCancelable = false
+                            dialog.stackAddSubject.subscribe { stack ->
+                                controller.updateStack(position, stack)
+                            }
+                            dialog.show((holder.view.context as Activity).fragmentManager, CardDialog.TAG)
+                            false
                         }
-                        dialog.show((holder.view.context as Activity).fragmentManager, CardDialog.TAG)
-                        false
-                    }
+            }
         }
 
         holder.view.setOnClickListener({ _ ->

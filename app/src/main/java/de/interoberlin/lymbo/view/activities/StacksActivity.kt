@@ -36,6 +36,7 @@ class StacksActivity : AppCompatActivity() {
         setContentView(R.layout.activity_stacks)
         setTitle(R.string.app_name)
         requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE, 0)
+        requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, 1)
     }
 
     override fun onResume() {
@@ -55,7 +56,7 @@ class StacksActivity : AppCompatActivity() {
             dialog.arguments = bundle
             dialog.isCancelable = false
             dialog.stackAddSubject.subscribe { stack ->
-                controller.addStack(stack)
+                controller.createStack(stack)
             }
             dialog.show(fragmentManager, CardDialog.TAG)
         }

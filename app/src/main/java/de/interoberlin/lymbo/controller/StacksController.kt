@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Environment
 import android.util.Log
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import de.interoberlin.lymbo.App
 import de.interoberlin.lymbo.App.Companion.context
 import de.interoberlin.lymbo.R
@@ -42,11 +43,21 @@ class StacksController private constructor() {
     }
 
     /**
+     * Creates a stack
+     *
+     * @param stack   stack to be created
+     */
+    fun createStack(stack: Stack) {
+        addStack(stack)
+        writeFile(stack)
+    }
+
+    /**
      * Adds a stack
      *
      * @param stack   stack to be added
      */
-    fun addStack(stack: Stack) {
+    private fun addStack(stack: Stack) {
         stacks.add(stack)
         stacksSubject.onNext(stacks.size - 1)
     }
@@ -60,16 +71,18 @@ class StacksController private constructor() {
         stacks.removeAt(position)
         stacks.add(position, stack)
         stacksSubject.onNext(position)
+        writeFile(stack)
     }
 
     /**
      * Deletes an existing stack
      *
-     * @param stack stack to be deleted
+     * @param position position of stack to be deleted
      */
     fun deleteStack(position: Int, stack: Stack) {
         stacks.removeAt(position)
         stacksSubject.onNext(position)
+        deleteFile(stack)
     }
 
     /**
@@ -121,7 +134,10 @@ class StacksController private constructor() {
      * @return collection of files
      */
     private fun findFiles(dir: String, extension: String): MutableCollection<File>? = if (checkStorage() && File(Environment.getExternalStorageDirectory().absoluteFile.toString() + "/" + dir).exists()) {
-        FileUtils.listFiles(File(Environment.getExternalStorageDirectory().absoluteFile.toString() + "/" + dir), RegexFileFilter(".*$extension"), TrueFileFilter.TRUE)
+        FileUtils.listFiles(
+                File(Environment.getExternalStorageDirectory().absoluteFile.toString() + "/" + dir),
+                RegexFileFilter(".*$extension"),
+                TrueFileFilter.TRUE)
     } else {
         ArrayList()
     }
@@ -167,7 +183,9 @@ class StacksController private constructor() {
     private fun getStackFromFile(context: Context, file: File?): Stack? {
         return try {
             if (file != null && file.absolutePath.endsWith(context.resources.getString(R.string.lymbo_file_extension)) && file.exists()) {
-                getStackFromInputStream(FileInputStream(file))
+                val stack = getStackFromInputStream(FileInputStream(file))
+                stack?.fileName = file.name.toString()
+                stack
             } else {
                 null
             }
@@ -175,6 +193,45 @@ class StacksController private constructor() {
             Log.e(TAG, e.toString())
             e.printStackTrace()
             null
+        }
+    }
+
+    private fun writeFile(stack: Stack): Boolean {
+        if (checkStorage() && !stack.fileName.isEmpty()) {
+            // Create save directory
+            val saveDirectory = Environment.getExternalStorageDirectory().absoluteFile.toString() + "/" + LYMBO_LOOKUP_PATH
+            File(saveDirectory).mkdirs()
+            stack.modificationDate = GregorianCalendar()
+
+            return try {
+                val file = File("$saveDirectory/${stack.fileName}")
+                val fw = FileWriter(file)
+                val content = GsonBuilder().setPrettyPrinting().create().toJson(stack, Stack::class.java)
+
+                fw.write(content)
+                fw.flush()
+                fw.close()
+                true
+            } catch (e: IOException) {
+                e.printStackTrace()
+                false
+            }
+        } else {
+            return false
+        }
+    }
+
+    private fun deleteFile(stack: Stack): Boolean {
+        if (checkStorage() && !stack.fileName.isEmpty()) {
+            return try {
+                val saveDirectory = Environment.getExternalStorageDirectory().absoluteFile.toString() + "/" + LYMBO_LOOKUP_PATH
+                File("$saveDirectory/${stack.fileName}").delete()
+            } catch (e: IOException) {
+                e.printStackTrace()
+                false
+            }
+        } else {
+            return false
         }
     }
 

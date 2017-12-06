@@ -60,6 +60,10 @@ class StackDialog : DialogFragment() {
                 else -> {
                     stack.title = title
 
+                    if (mode == DialogType.ADD) {
+                        stack.fileName = title.toLowerCase().replace(" ", "_").plus(".lymbo")
+                    }
+
                     stackAddSubject.onNext(stack)
                     dismiss()
                 }
