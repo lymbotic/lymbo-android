@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.ContextMenu
 import android.view.LayoutInflater
 import android.view.View
@@ -20,11 +21,13 @@ import de.interoberlin.lymbo.controller.CardsController
 import de.interoberlin.lymbo.model.Card
 import de.interoberlin.lymbo.view.dialogs.CardDialog
 import de.interoberlin.lymbo.view.dialogs.ConfirmationDialog
+import de.interoberlin.lymbo.view.helper.ItemTouchHelperAdapter
 
 
-class CardsRecyclerViewAdapter(items: MutableList<Card>) : RecyclerView.Adapter<CardsRecyclerViewAdapter.ViewHolder>() {
+class CardsRecyclerViewAdapter(items: MutableList<Card>) : RecyclerView.Adapter<CardsRecyclerViewAdapter.ViewHolder>(),
+        ItemTouchHelperAdapter {
     companion object {
-        // val TAG = CardsRecyclerViewAdapter::class.toString()
+        val TAG = CardsRecyclerViewAdapter::class.toString()
         val controller = CardsController.instance
     }
 
@@ -107,6 +110,15 @@ class CardsRecyclerViewAdapter(items: MutableList<Card>) : RecyclerView.Adapter<
     }
 
     override fun getItemCount(): Int = items.size
+
+    override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
+        Log.i(TAG, "onItemMove")
+        return true
+    }
+
+    override fun onItemDismiss(position: Int) {
+        Log.i(TAG, "onItemDismiss")
+    }
 
     private fun flipCard(card: Card, holder: ViewHolder) {
         holder.rlContent?.getChildAt(activeSideIndex)?.visibility = INVISIBLE

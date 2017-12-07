@@ -15,8 +15,13 @@ import de.interoberlin.lymbo.R
 import de.interoberlin.lymbo.controller.CardsController
 import de.interoberlin.lymbo.view.adapters.CardsRecyclerViewAdapter
 import de.interoberlin.lymbo.view.dialogs.CardDialog
+import de.interoberlin.lymbo.view.helper.OnStartDragListener
+import android.support.v7.widget.helper.ItemTouchHelper
+import de.interoberlin.lymbo.view.helper.SimpleItemTouchHelperCallback
 
-class CardsActivity : AppCompatActivity() {
+
+
+class CardsActivity : AppCompatActivity(), OnStartDragListener {
     companion object {
         // val TAG = CardsActivity::class.toString()
     }
@@ -62,6 +67,11 @@ class CardsActivity : AppCompatActivity() {
             rvCards.layoutManager = LinearLayoutManager(this)
             cardsAdapter.notifyDataSetChanged()
         }
+
+
+        val callback = SimpleItemTouchHelperCallback(cardsAdapter)
+        val itemTouchHelper = ItemTouchHelper(callback)
+        itemTouchHelper.attachToRecyclerView(rvCards)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -78,6 +88,10 @@ class CardsActivity : AppCompatActivity() {
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     private fun showSnackbar(view: View, message: String) {
