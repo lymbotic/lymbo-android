@@ -25,4 +25,5 @@
     <string name="ph_title">title</string>
     <string name="update_card">Update card</string>
     <string name="update_stack">Update stack</string>
+    <string name="action_recover">Recover</string>
 </resources>

@@ -36,7 +36,7 @@ class ConfirmationDialog : DialogFragment() {
 
         val tvText = v.findViewById(R.id.tvText) as TextView
 
-        tvText.setText(text)
+        tvText.text = text
 
         builder.setPositiveButton(action, { _, _ ->
             resultSubject.onNext(value)

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.helper.ItemTouchHelper
 import android.util.Log
 import android.view.ContextMenu
 import android.view.LayoutInflater
@@ -11,9 +12,7 @@ import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.widget.*
 import com.google.gson.Gson
 import de.interoberlin.lymbo.App.Companion.context
 import de.interoberlin.lymbo.R
@@ -24,41 +23,56 @@ import de.interoberlin.lymbo.view.dialogs.ConfirmationDialog
 import de.interoberlin.lymbo.view.helper.ItemTouchHelperAdapter
 
 
-class CardsRecyclerViewAdapter(items: MutableList<Card>) : RecyclerView.Adapter<CardsRecyclerViewAdapter.ViewHolder>(),
-        ItemTouchHelperAdapter {
+class CardsRecyclerViewAdapter(items: MutableList<Card>) :
+        RecyclerView.Adapter<CardsRecyclerViewAdapter.ViewHolder>(),
+        ItemTouchHelperAdapter,
+        Filterable {
     companion object {
         val TAG = CardsRecyclerViewAdapter::class.toString()
         val controller = CardsController.instance
     }
 
-    private var items: MutableList<Card> = ArrayList()
+    private var originalItems: MutableList<Card> = ArrayList()
+    private var filteredList: MutableList<Card> = ArrayList()
     private var vi: LayoutInflater
 
     private var activeSideIndex: Int = 0
 
     init {
-        this.items = items
+        this.originalItems = items
+        this.filteredList = items
         this.vi = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        this.filter.filter("")
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var view: View? = null
+
+        // Background
+        var rlBackground: RelativeLayout? = null
+
+        // Foreground
+        var rlForeground: RelativeLayout? = null
         var rlContent: RelativeLayout? = null
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.card, parent, false)
+        val rlBackground = view.findViewById(R.id.rlBackground) as RelativeLayout
+        val rlForeground = view.findViewById(R.id.rlForeground) as RelativeLayout
         val rlContent = view.findViewById(R.id.rlContent) as RelativeLayout
 
         val holder = ViewHolder(view)
         holder.view = view
+        holder.rlBackground = rlBackground
+        holder.rlForeground = rlForeground
         holder.rlContent = rlContent
 
         return holder
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val card = items[position]
+        val card = filteredList[position]
 
         holder.rlContent?.setOnCreateContextMenuListener { contextMenu: ContextMenu, _, _ ->
             contextMenu.add(0, 0, 0, context.resources.getString(R.string.delete))
@@ -109,15 +123,55 @@ class CardsRecyclerViewAdapter(items: MutableList<Card>) : RecyclerView.Adapter<
         }
     }
 
-    override fun getItemCount(): Int = items.size
+    override fun getItemCount(): Int = filteredList.size
 
     override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
         Log.i(TAG, "onItemMove")
         return true
     }
 
-    override fun onItemDismiss(position: Int) {
+    override fun onItemDismiss(viewHolder: RecyclerView.ViewHolder, position: Int, direction: Int) {
         Log.i(TAG, "onItemDismiss")
+
+        if (viewHolder is ViewHolder) {
+            if (direction == ItemTouchHelper.START) {
+            } else if (direction == ItemTouchHelper.END) {
+                controller.putCardAside(position, filteredList[position])
+            }
+        }
+    }
+
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val results = Filter.FilterResults()
+
+                val filtered: MutableList<Card> = ArrayList()
+                originalItems.forEach { c ->
+                    if (!c.checked)
+                        filtered.add(c)
+                }
+
+                results.values = filtered
+                results.count = filtered.size
+
+                return results
+            }
+
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                filteredList = results?.values as MutableList<Card>
+                controller.cardsSubject.onNext(0)
+            }
+        }
+    }
+
+    /**
+     * Applies filter using a constraint
+     *
+     * @param constraint constraint
+     */
+    fun applyFilter(constraint: String) {
+        filter.filter(constraint)
     }
 
     private fun flipCard(card: Card, holder: ViewHolder) {

@@ -10,7 +10,6 @@ interface ItemTouchHelperViewHolder {
      */
     fun onItemSelected()
 
-
     /**
      * Called when the [ItemTouchHelper] has completed the move or swipe, and the active item
      * state should be cleared.

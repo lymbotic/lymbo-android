@@ -5,12 +5,13 @@ import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 
-class SimpleItemTouchHelperCallback(private val mAdapter: ItemTouchHelperAdapter) : ItemTouchHelper.Callback() {
+class SimpleItemTouchHelperCallback(private val adapter: ItemTouchHelperAdapter) : ItemTouchHelper.Callback() {
     companion object {
+        val TAG = SimpleItemTouchHelperCallback::class.toString()
         val ALPHA_FULL = 1.0f
     }
 
-    override fun isLongPressDragEnabled(): Boolean = true
+    override fun isLongPressDragEnabled(): Boolean = false
 
     override fun isItemViewSwipeEnabled(): Boolean = true
 
@@ -33,13 +34,12 @@ class SimpleItemTouchHelperCallback(private val mAdapter: ItemTouchHelperAdapter
         }
 
         // Notify the adapter of the move
-        mAdapter.onItemMove(source.adapterPosition, target.adapterPosition)
+        adapter.onItemMove(source.adapterPosition, target.adapterPosition)
         return true
     }
 
-    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, i: Int) {
-        // Notify the adapter of the dismissal
-        mAdapter.onItemDismiss(viewHolder.adapterPosition)
+    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+        adapter.onItemDismiss(viewHolder, viewHolder.adapterPosition, direction)
     }
 
     override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {

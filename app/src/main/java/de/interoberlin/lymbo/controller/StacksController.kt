@@ -222,8 +222,8 @@ class StacksController private constructor() {
     }
 
     private fun deleteFile(stack: Stack): Boolean {
-        if (checkStorage() && !stack.fileName.isEmpty()) {
-            return try {
+        return if (checkStorage() && !stack.fileName.isEmpty()) {
+            try {
                 val saveDirectory = Environment.getExternalStorageDirectory().absoluteFile.toString() + "/" + LYMBO_LOOKUP_PATH
                 File("$saveDirectory/${stack.fileName}").delete()
             } catch (e: IOException) {
@@ -231,7 +231,7 @@ class StacksController private constructor() {
                 false
             }
         } else {
-            return false
+            false
         }
     }
 

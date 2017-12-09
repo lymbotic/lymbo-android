@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
+import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -16,14 +17,13 @@ import de.interoberlin.lymbo.controller.CardsController
 import de.interoberlin.lymbo.view.adapters.CardsRecyclerViewAdapter
 import de.interoberlin.lymbo.view.dialogs.CardDialog
 import de.interoberlin.lymbo.view.helper.OnStartDragListener
-import android.support.v7.widget.helper.ItemTouchHelper
 import de.interoberlin.lymbo.view.helper.SimpleItemTouchHelperCallback
-
 
 
 class CardsActivity : AppCompatActivity(), OnStartDragListener {
     companion object {
         // val TAG = CardsActivity::class.toString()
+        lateinit var cardsAdapter: CardsRecyclerViewAdapter
     }
 
     private val controller = CardsController.instance
@@ -44,7 +44,7 @@ class CardsActivity : AppCompatActivity(), OnStartDragListener {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val cardsAdapter = CardsRecyclerViewAdapter(controller.cards)
+        cardsAdapter = CardsRecyclerViewAdapter(controller.cards)
         rvCards.layoutManager = LinearLayoutManager(this)
         rvCards.adapter = cardsAdapter
 
@@ -65,7 +65,12 @@ class CardsActivity : AppCompatActivity(), OnStartDragListener {
             rvCards.layoutManager = null
             rvCards.adapter = cardsAdapter
             rvCards.layoutManager = LinearLayoutManager(this)
+
             cardsAdapter.notifyDataSetChanged()
+        }
+
+        controller.cardsFilterSubject.subscribe { _ ->
+            cardsAdapter.applyFilter("")
         }
 
 
@@ -75,7 +80,7 @@ class CardsActivity : AppCompatActivity(), OnStartDragListener {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
+        menuInflater.inflate(R.menu.menu_cards, menu)
         return true
     }
 
@@ -85,6 +90,11 @@ class CardsActivity : AppCompatActivity(), OnStartDragListener {
         if (id == R.id.action_settings) {
             val main = findViewById(R.id.layoutMain)
             showSnackbar(main, "Clicked on menu item Settings")
+        } else if (id == R.id.action_recover) {
+            controller.cards.forEach { c ->
+                c.checked = false
+                cardsAdapter.applyFilter("")
+            }
         }
 
         return super.onOptionsItemSelected(item)

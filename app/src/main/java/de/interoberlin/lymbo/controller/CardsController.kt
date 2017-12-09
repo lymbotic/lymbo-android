@@ -19,6 +19,7 @@ class CardsController private constructor() {
     var stackTitle = ""
     var cards: MutableList<Card> = ArrayList()
     var cardsSubject: Subject<Int> = PublishSubject.create()
+    var cardsFilterSubject: Subject<Int> = PublishSubject.create()
 
     /**
      * Adds a card to the current stack
@@ -27,27 +28,40 @@ class CardsController private constructor() {
      */
     fun addCard(card: Card) {
         cards.add(card)
-        cardsSubject.onNext(cards.size)
+        cardsFilterSubject.onNext(cards.size)
     }
 
     /**
      * Updates an existing card
      *
+     * @param position position of card to be updated
      * @param card card to be updated
      */
     fun updateCard(position: Int, card: Card) {
         cards.removeAt(position)
         cards.add(position, card)
-        cardsSubject.onNext(position)
+        cardsFilterSubject.onNext(position)
     }
 
     /**
      * Deletes an existing card
      *
+     * @param position position of card to be deleted
      * @param card card to be deleted
      */
     fun deleteCard(position: Int, card: Card) {
         cards.removeAt(position)
-        cardsSubject.onNext(position)
+        cardsFilterSubject.onNext(position)
+    }
+
+    /**
+     * Puts card aside
+     *
+     * @param position position of card to be put aside
+     * @param card card to be put aside
+     */
+    fun putCardAside(position: Int, card: Card) {
+        card.checked = true
+        cardsFilterSubject.onNext(position)
     }
 }
