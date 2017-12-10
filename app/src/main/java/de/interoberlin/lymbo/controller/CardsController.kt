@@ -12,7 +12,6 @@ class CardsController private constructor() {
 
     companion object {
         // val TAG = CardsController::class.toString()
-
         val instance: CardsController by lazy { Holder.INSTANCE }
     }
 
@@ -49,7 +48,7 @@ class CardsController private constructor() {
      * @param position position of card to be deleted
      * @param card card to be deleted
      */
-    fun deleteCard(position: Int, card: Card) {
+    fun deleteCard(position: Int) {
         cards.removeAt(position)
         cardsFilterSubject.onNext(position)
     }
@@ -62,6 +61,18 @@ class CardsController private constructor() {
      */
     fun putCardAside(position: Int, card: Card) {
         card.checked = true
+        cardsFilterSubject.onNext(position)
+    }
+
+    /**
+     * Puts card to to the end
+     *
+     * @param position position of card to to the end
+     * @param card card to to the end
+     */
+    fun putCardToEnd(position: Int, card: Card) {
+        cards.removeAt(position)
+        cards.add(card)
         cardsFilterSubject.onNext(position)
     }
 }

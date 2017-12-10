@@ -87,7 +87,7 @@ class CardsRecyclerViewAdapter(items: MutableList<Card>) :
                         dialog.isCancelable = false
                         dialog.resultSubject.subscribe { result ->
                             if (result != null)
-                                controller.deleteCard(position, Gson().fromJson(result.toString(), Card::class.java))
+                                controller.deleteCard(position)
                         }
                         dialog.show((holder.view?.context as Activity).fragmentManager, CardDialog.TAG)
                         false
@@ -135,6 +135,7 @@ class CardsRecyclerViewAdapter(items: MutableList<Card>) :
 
         if (viewHolder is ViewHolder) {
             if (direction == ItemTouchHelper.START) {
+                controller.putCardToEnd(position, filteredList[position])
             } else if (direction == ItemTouchHelper.END) {
                 controller.putCardAside(position, filteredList[position])
             }

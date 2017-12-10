@@ -65,6 +65,7 @@ class StacksController private constructor() {
     /**
      * Updates an existing stack
      *
+     * @param position position of stack to be updated
      * @param stack stack to be updated
      */
     fun updateStack(position: Int, stack: Stack) {
@@ -78,6 +79,7 @@ class StacksController private constructor() {
      * Deletes an existing stack
      *
      * @param position position of stack to be deleted
+     * @param stack stack to be deleted
      */
     fun deleteStack(position: Int, stack: Stack) {
         stacks.removeAt(position)
