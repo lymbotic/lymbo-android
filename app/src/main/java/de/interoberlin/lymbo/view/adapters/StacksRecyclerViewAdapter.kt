@@ -97,7 +97,7 @@ class StacksRecyclerViewAdapter(items: MutableList<Stack>) : RecyclerView.Adapte
         }
 
         holder.view.setOnClickListener({ _ ->
-            cardsController.stackTitle = items[position].title
+            cardsController.stack = items[position]
             cardsController.cards = items[position].cards
 
             val activity = Intent(context, CardsActivity::class.java)

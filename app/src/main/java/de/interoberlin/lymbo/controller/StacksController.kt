@@ -198,7 +198,7 @@ class StacksController private constructor() {
         }
     }
 
-    private fun writeFile(stack: Stack): Boolean {
+    fun writeFile(stack: Stack): Boolean {
         if (checkStorage() && !stack.fileName.isEmpty()) {
             // Create save directory
             val saveDirectory = Environment.getExternalStorageDirectory().absoluteFile.toString() + "/" + LYMBO_LOOKUP_PATH

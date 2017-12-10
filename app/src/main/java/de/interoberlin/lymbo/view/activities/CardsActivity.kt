@@ -31,7 +31,7 @@ class CardsActivity : AppCompatActivity(), OnStartDragListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cards)
-        title = "${context.resources.getString(R.string.app_name)} | ${controller.stackTitle}"
+        title = "${context.resources.getString(R.string.app_name)} | ${controller.stack.title}"
     }
 
     override fun onResume() {

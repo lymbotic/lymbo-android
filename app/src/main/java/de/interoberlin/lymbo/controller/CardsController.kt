@@ -1,6 +1,7 @@
 package de.interoberlin.lymbo.controller
 
 import de.interoberlin.lymbo.model.Card
+import de.interoberlin.lymbo.model.Stack
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import java.util.*
@@ -13,9 +14,10 @@ class CardsController private constructor() {
     companion object {
         // val TAG = CardsController::class.toString()
         val instance: CardsController by lazy { Holder.INSTANCE }
+        val stacksController: StacksController = StacksController.instance
     }
 
-    var stackTitle = ""
+    lateinit var stack: Stack
     var cards: MutableList<Card> = ArrayList()
     var cardsSubject: Subject<Int> = PublishSubject.create()
     var cardsFilterSubject: Subject<Int> = PublishSubject.create()
@@ -28,6 +30,8 @@ class CardsController private constructor() {
     fun addCard(card: Card) {
         cards.add(card)
         cardsFilterSubject.onNext(cards.size)
+
+        saveStack()
     }
 
     /**
@@ -40,17 +44,20 @@ class CardsController private constructor() {
         cards.removeAt(position)
         cards.add(position, card)
         cardsFilterSubject.onNext(position)
+
+        saveStack()
     }
 
     /**
      * Deletes an existing card
      *
      * @param position position of card to be deleted
-     * @param card card to be deleted
      */
     fun deleteCard(position: Int) {
         cards.removeAt(position)
         cardsFilterSubject.onNext(position)
+
+        saveStack()
     }
 
     /**
@@ -74,5 +81,10 @@ class CardsController private constructor() {
         cards.removeAt(position)
         cards.add(card)
         cardsFilterSubject.onNext(position)
+    }
+
+    private fun saveStack() {
+        stack.cards = cards
+        stacksController.writeFile(stack)
     }
 }
