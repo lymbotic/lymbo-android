@@ -106,6 +106,7 @@ class CardsRecyclerViewAdapter(items: MutableList<Card>) :
                         false
                     }
         }
+        holder.rlContent?.removeAllViews()
 
         card.sides.forEach { s ->
             val li = LayoutInflater.from(context)
@@ -118,9 +119,8 @@ class CardsRecyclerViewAdapter(items: MutableList<Card>) :
         }
 
         holder.rlContent?.getChildAt(activeSideIndex)?.visibility = VISIBLE
-        holder.rlContent?.setOnClickListener { _ ->
-            this.flipCard(card, holder)
-        }
+        holder.rlContent?.setOnClickListener { this.flipCard(card, holder) }
+        holder.view?.setOnClickListener { this.flipCard(card, holder) }
     }
 
     override fun getItemCount(): Int = filteredList.size
