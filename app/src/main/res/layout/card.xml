@@ -25,11 +25,23 @@
             card_view:cardUseCompatPadding="true"
             card_view:contentPadding="8dp">
 
-            <RelativeLayout
-                android:id="@+id/rlContent"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
+                <RelativeLayout
+                    android:id="@+id/rlContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+
+                <LinearLayout
+                    android:id="@+id/llTags"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" />
+            </LinearLayout>
         </android.support.v7.widget.CardView>
     </RelativeLayout>
 </FrameLayout>

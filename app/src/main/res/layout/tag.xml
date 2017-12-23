@@ -1,0 +1,20 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:id="@+id/flCard"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_marginEnd="@dimen/tag_horizontal_margin"
+             android:layout_marginStart="@dimen/tag_horizontal_margin"
+             android:background="@color/tag_background"
+             android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/tag_vertical_padding"
+        android:paddingLeft="@dimen/tag_horizontal_padding"
+        android:paddingRight="@dimen/tag_horizontal_padding"
+        android:paddingTop="@dimen/tag_vertical_padding"
+        android:text="@string/tag"
+        />
+</FrameLayout>

@@ -18,6 +18,8 @@ import de.interoberlin.lymbo.App.Companion.context
 import de.interoberlin.lymbo.R
 import de.interoberlin.lymbo.controller.CardsController
 import de.interoberlin.lymbo.model.Card
+import de.interoberlin.lymbo.model.Tag
+import de.interoberlin.lymbo.view.components.TagView
 import de.interoberlin.lymbo.view.dialogs.CardDialog
 import de.interoberlin.lymbo.view.dialogs.ConfirmationDialog
 import de.interoberlin.lymbo.view.helper.ItemTouchHelperAdapter
@@ -54,6 +56,8 @@ class CardsRecyclerViewAdapter(items: MutableList<Card>) :
         // Foreground
         var rlForeground: RelativeLayout? = null
         var rlContent: RelativeLayout? = null
+
+        var llTags: LinearLayout? = null
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -61,12 +65,14 @@ class CardsRecyclerViewAdapter(items: MutableList<Card>) :
         val rlBackground = view.findViewById(R.id.rlBackground) as RelativeLayout
         val rlForeground = view.findViewById(R.id.rlForeground) as RelativeLayout
         val rlContent = view.findViewById(R.id.rlContent) as RelativeLayout
+        val llTags = view.findViewById(R.id.llTags) as LinearLayout
 
         val holder = ViewHolder(view)
         holder.view = view
         holder.rlBackground = rlBackground
         holder.rlForeground = rlForeground
         holder.rlContent = rlContent
+        holder.llTags = llTags
 
         return holder
     }
@@ -97,6 +103,7 @@ class CardsRecyclerViewAdapter(items: MutableList<Card>) :
                         val dialog = CardDialog()
                         val bundle = Bundle()
                         bundle.putString(context.resources.getString(R.string.bundle_card), Gson().toJson(card))
+                        bundle.putString(context.resources.getString(R.string.bundle_tags), Gson().toJson(controller.tags))
                         dialog.arguments = bundle
                         dialog.isCancelable = false
                         dialog.cardAddSubject.subscribe { card ->
@@ -121,6 +128,11 @@ class CardsRecyclerViewAdapter(items: MutableList<Card>) :
         holder.rlContent?.getChildAt(activeSideIndex)?.visibility = VISIBLE
         holder.rlContent?.setOnClickListener { this.flipCard(card, holder) }
         holder.view?.setOnClickListener { this.flipCard(card, holder) }
+
+        holder.llTags?.removeAllViews()
+        card.tags.forEach { t ->
+            holder.llTags?.addView(TagView(context, t))
+        }
     }
 
     override fun getItemCount(): Int = filteredList.size
@@ -149,7 +161,7 @@ class CardsRecyclerViewAdapter(items: MutableList<Card>) :
 
                 val filtered: MutableList<Card> = ArrayList()
                 originalItems.forEach { c ->
-                    if (!c.checked)
+                    if (!c.checked && matchesTags(c, controller.tags))
                         filtered.add(c)
                 }
 
@@ -164,6 +176,20 @@ class CardsRecyclerViewAdapter(items: MutableList<Card>) :
                 controller.cardsSubject.onNext(0)
             }
         }
+    }
+
+    private fun matchesTags(card: Card, tags: MutableList<Tag>): Boolean {
+        if (card.tags.isEmpty()) return true
+
+        tags.filter({ it.checked }).forEach { t ->
+            card.tags.forEach { ct ->
+                if (t.value == ct.value) {
+                    return true
+                }
+            }
+        }
+
+        return false
     }
 
     /**

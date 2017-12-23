@@ -8,4 +8,5 @@
 
     <color name="colorSubtitle">#89000000</color>
     <color name="vendor">#cdcdcd</color>
+    <color name="tag_background">#cdcdcd</color>
 </resources>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="?dialogPreferredPadding">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:padding="?dialogPreferredPadding">
 
     <EditText
         android:id="@+id/etFrontTitle"
@@ -13,7 +13,7 @@
         android:hint="@string/ph_front_title"
         android:inputType="text">
 
-        <requestFocus />
+        <requestFocus/>
     </EditText>
 
     <EditText
@@ -22,5 +22,15 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/ph_back_title"
-        android:inputType="text" />
+        android:inputType="text"/>
+
+    <ListView
+        android:id="@+id/lvSelectableTags"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <ListView
+        android:id="@+id/lvEditableTags"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 </LinearLayout>

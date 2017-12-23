@@ -5,6 +5,7 @@ import android.os.Environment
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonSyntaxException
 import de.interoberlin.lymbo.App
 import de.interoberlin.lymbo.App.Companion.context
 import de.interoberlin.lymbo.R
@@ -242,6 +243,10 @@ class StacksController private constructor() {
             val content = IOUtils.toString(inputStream, "UTF-8")
             return Gson().fromJson(content, Stack::class.java)
         } catch (e: IOException) {
+            e.printStackTrace()
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
+        } catch (e: JsonSyntaxException) {
             e.printStackTrace()
         }
 

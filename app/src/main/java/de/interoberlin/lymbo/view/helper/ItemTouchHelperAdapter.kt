@@ -29,7 +29,7 @@ interface ItemTouchHelperAdapter {
      *
      * @param viewHolder view holder
      * @param position The position of the item dismissed.
-     * @param direction See [ItemTouchHelper]
+     * @param direction direction
      *
      * @see RecyclerView.getAdapterPositionFor
      * @see RecyclerView.ViewHolder.getAdapterPosition
