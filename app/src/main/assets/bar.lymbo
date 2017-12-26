@@ -15,5 +15,6 @@
         {"value": "FOO", "checked": true}
       ]
     }
-  ], "id": "a3b597df-0c31-41c3-b040-e91b391c044e", "title": "Test Lymbo"
+  ], tags: [],
+  "id": "a3b597df-0c31-41c3-b040-e91b391c044e", "title": "Test Lymbo"
 }
