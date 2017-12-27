@@ -22,7 +22,7 @@ import java.util.*
 
 class StackDialog : DialogFragment() {
     companion object {
-        // val TAG = StackDialog::class.toString()
+        val TAG = StackDialog::class.toString()
     }
 
     private var mode = DialogType.NONE
