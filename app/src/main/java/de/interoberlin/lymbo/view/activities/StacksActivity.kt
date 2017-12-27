@@ -24,10 +24,12 @@ import de.interoberlin.lymbo.controller.StacksController
 import de.interoberlin.lymbo.view.adapters.StacksRecyclerViewAdapter
 import de.interoberlin.lymbo.view.dialogs.CardDialog
 import de.interoberlin.lymbo.view.dialogs.StackDialog
+import de.interoberlin.lymbo.view.dialogs.TagDialog
 
 class StacksActivity : AppCompatActivity() {
     companion object {
         val TAG = StacksActivity::class.toString()
+        lateinit var stacksAdapter: StacksRecyclerViewAdapter
     }
 
     private var controller = StacksController.instance
@@ -54,6 +56,10 @@ class StacksActivity : AppCompatActivity() {
 
         setSupportActionBar(toolbar)
 
+        stacksAdapter = StacksRecyclerViewAdapter(controller.stacks)
+        rvStacks.layoutManager = LinearLayoutManager(this)
+        rvStacks.adapter = stacksAdapter
+
         fab.setOnClickListener { _ ->
             val dialog = StackDialog()
             val bundle = Bundle()
@@ -64,7 +70,7 @@ class StacksActivity : AppCompatActivity() {
             dialog.stackAddSubject.subscribe { stack ->
                 controller.createStack(stack)
             }
-            dialog.show(fragmentManager, CardDialog.TAG)
+            dialog.show(fragmentManager, StackDialog.TAG)
         }
 
         ivSearch.setOnClickListener({ _ ->
@@ -82,11 +88,12 @@ class StacksActivity : AppCompatActivity() {
             ivSearch.visibility = View.VISIBLE
         }
 
-        val stacksAdapter = StacksRecyclerViewAdapter(controller.stacks)
-        rvStacks.layoutManager = LinearLayoutManager(this)
-        rvStacks.adapter = stacksAdapter
-
         controller.stacksSubject.subscribe { _ ->
+            rvStacks.adapter = null
+            rvStacks.layoutManager = null
+            rvStacks.adapter = stacksAdapter
+            rvStacks.layoutManager = LinearLayoutManager(this)
+
             stacksAdapter.notifyDataSetChanged()
 
             if (controller.stacks.size > 0) {
@@ -95,19 +102,39 @@ class StacksActivity : AppCompatActivity() {
                 ivSearch.visibility = View.VISIBLE
             }
         }
+
+        controller.stacksFilterSubject.subscribe { _ ->
+            controller.updateTags()
+            stacksAdapter.applyFilter("")
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
+        menuInflater.inflate(R.menu.menu_stacks, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
 
-        if (id == R.id.action_settings) {
-            val main = findViewById(R.id.layoutMain)
-            showSnackbar(main, "Clicked on menu item Setting")
+
+        when (id) {
+            R.id.action_tags -> {
+                val dialog = TagDialog()
+                val bundle = Bundle()
+                bundle.putString(App.context.resources.getString(R.string.bundle_tags), Gson().toJson(controller.tags))
+                dialog.arguments = bundle
+                dialog.isCancelable = true
+                dialog.tagsSelectedSubject.subscribe { tags ->
+                    controller.tags = tags
+                    stacksAdapter.applyFilter("")
+                }
+                dialog.show(fragmentManager, TagDialog.TAG)
+            }
+            R.id.action_settings -> {
+                val main = findViewById(R.id.layoutMain)
+                showSnackbar(main, "Clicked on menu item Settings")
+            }
         }
 
         return super.onOptionsItemSelected(item)

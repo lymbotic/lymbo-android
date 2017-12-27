@@ -62,6 +62,8 @@ class StackDialog : DialogFragment() {
 
             stack = Stack()
             stack.id = UUID.randomUUID().toString()
+
+            existingTags.forEach { it.checked = false }
         }
 
         val v = View.inflate(activity, R.layout.dialog_stack, null)

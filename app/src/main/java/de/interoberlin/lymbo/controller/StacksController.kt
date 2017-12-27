@@ -36,6 +36,7 @@ class StacksController private constructor() {
 
     var stacks: MutableList<Stack> = ArrayList()
     var stacksSubject: Subject<Int> = PublishSubject.create()
+    var stacksFilterSubject: Subject<Int> = PublishSubject.create()
 
     var tags: MutableList<Tag> = ArrayList()
 
@@ -49,7 +50,7 @@ class StacksController private constructor() {
     /**
      * Creates a stack
      *
-     * @param stack   stack to be created
+     * @param stack stack to be created
      */
     fun createStack(stack: Stack) {
         addStack(stack)
@@ -59,11 +60,11 @@ class StacksController private constructor() {
     /**
      * Adds a stack
      *
-     * @param stack   stack to be added
+     * @param stack stack to be added
      */
     private fun addStack(stack: Stack) {
         stacks.add(stack)
-        stacksSubject.onNext(stacks.size - 1)
+        stacksFilterSubject.onNext(stacks.size)
     }
 
     /**
@@ -75,7 +76,7 @@ class StacksController private constructor() {
     fun updateStack(position: Int, stack: Stack) {
         stacks.removeAt(position)
         stacks.add(position, stack)
-        stacksSubject.onNext(position)
+        stacksFilterSubject.onNext(position)
         writeFile(stack)
     }
 
@@ -87,7 +88,7 @@ class StacksController private constructor() {
      */
     fun deleteStack(position: Int, stack: Stack) {
         stacks.removeAt(position)
-        stacksSubject.onNext(position)
+        stacksFilterSubject.onNext(position)
         deleteFile(stack)
     }
 
