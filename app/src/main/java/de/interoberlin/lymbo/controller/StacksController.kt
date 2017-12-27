@@ -10,6 +10,7 @@ import de.interoberlin.lymbo.App
 import de.interoberlin.lymbo.App.Companion.context
 import de.interoberlin.lymbo.R
 import de.interoberlin.lymbo.model.Stack
+import de.interoberlin.lymbo.model.Tag
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import org.apache.commons.io.FileUtils
@@ -35,6 +36,8 @@ class StacksController private constructor() {
 
     var stacks: MutableList<Stack> = ArrayList()
     var stacksSubject: Subject<Int> = PublishSubject.create()
+
+    var tags: MutableList<Tag> = ArrayList()
 
     /**
      * Clears stacks
@@ -251,5 +254,37 @@ class StacksController private constructor() {
         }
 
         return null
+    }
+
+    /**
+     * Updates tags
+     */
+    fun updateTags() {
+        val updatedTags: MutableList<Tag> = ArrayList()
+        this.stacks.forEach { s ->
+            s.tags.forEach { t ->
+                var unique = true
+                updatedTags.forEach { ut ->
+                    if (t.value == ut.value) {
+                        unique = false
+                    }
+                }
+
+                if (unique) {
+                    updatedTags.add(t)
+                }
+            }
+        }
+
+        updatedTags.forEach { ut ->
+            ut.checked = true
+            tags.forEach { t ->
+                if (t.value == ut.value) {
+                    ut.checked = t.checked
+                }
+            }
+        }
+
+        this.tags = updatedTags.sortedWith(compareBy({ it.value })).toMutableList()
     }
 }

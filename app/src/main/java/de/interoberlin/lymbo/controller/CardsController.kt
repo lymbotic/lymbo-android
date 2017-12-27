@@ -14,6 +14,7 @@ class CardsController private constructor() {
 
     companion object {
         // val TAG = CardsController::class.toString()
+
         val instance: CardsController by lazy { Holder.INSTANCE }
         val stacksController: StacksController = StacksController.instance
     }
@@ -87,7 +88,7 @@ class CardsController private constructor() {
     }
 
     /**
-     * Returns an array of unique tags
+     * Updates tags
      */
     fun updateTags() {
         val updatedTags: MutableList<Tag> = ArrayList()

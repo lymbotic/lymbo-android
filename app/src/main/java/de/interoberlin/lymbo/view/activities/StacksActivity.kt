@@ -16,6 +16,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
+import com.google.gson.Gson
+import de.interoberlin.lymbo.App
 import de.interoberlin.lymbo.BuildConfig
 import de.interoberlin.lymbo.R
 import de.interoberlin.lymbo.controller.StacksController
@@ -34,9 +36,11 @@ class StacksActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_stacks)
-        setTitle(R.string.app_name)
+        title = App.context.resources.getString(R.string.app_name)
         requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE, 0)
         requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, 1)
+
+        controller.updateTags()
     }
 
     override fun onResume() {
@@ -53,6 +57,8 @@ class StacksActivity : AppCompatActivity() {
         fab.setOnClickListener { _ ->
             val dialog = StackDialog()
             val bundle = Bundle()
+            bundle.putString(App.context.resources.getString(R.string.bundle_stack), null)
+            bundle.putString(App.context.resources.getString(R.string.bundle_tags), Gson().toJson(controller.tags))
             dialog.arguments = bundle
             dialog.isCancelable = false
             dialog.stackAddSubject.subscribe { stack ->
@@ -70,15 +76,15 @@ class StacksActivity : AppCompatActivity() {
             showSnackbar(main, "Started scan")
         })
 
-        val stacksAdapter = StacksRecyclerViewAdapter(controller.stacks)
-        rvStacks.layoutManager = LinearLayoutManager(this)
-        rvStacks.adapter = stacksAdapter
-
         if (controller.stacks.size > 0) {
             ivSearch.visibility = View.GONE
         } else {
             ivSearch.visibility = View.VISIBLE
         }
+
+        val stacksAdapter = StacksRecyclerViewAdapter(controller.stacks)
+        rvStacks.layoutManager = LinearLayoutManager(this)
+        rvStacks.adapter = stacksAdapter
 
         controller.stacksSubject.subscribe { _ ->
             stacksAdapter.notifyDataSetChanged()
