@@ -73,7 +73,23 @@ class StacksRecyclerViewAdapter(items: MutableList<Stack>) :
 
         holder.view.setOnCreateContextMenuListener { contextMenu: ContextMenu, _, _ ->
             if (!stack.fileName.isEmpty()) {
-                contextMenu.add(0, 0, 0, context.resources.getString(R.string.delete))
+                contextMenu.add(0, 0, 0, context.resources.getString(R.string.edit))
+                        .setOnMenuItemClickListener { _ ->
+                            val dialog = StackDialog()
+                            val bundle = Bundle()
+                            bundle.putString(context.resources.getString(R.string.bundle_stack), Gson().toJson(stack))
+                            bundle.putString(context.resources.getString(R.string.bundle_tags), Gson().toJson(controller.tags))
+                            dialog.arguments = bundle
+                            dialog.isCancelable = false
+                            dialog.stackAddSubject.subscribe { stack ->
+                                controller.updateStack(position, stack)
+                            }
+                            dialog.show((holder.view.context as Activity).fragmentManager, CardDialog.TAG)
+                            false
+                        }
+            }
+            if (!stack.fileName.isEmpty()) {
+                contextMenu.add(0, 0, 1, context.resources.getString(R.string.delete))
                         .setOnMenuItemClickListener { _ ->
                             val dialog = ConfirmationDialog()
                             val bundle = Bundle()
@@ -86,23 +102,6 @@ class StacksRecyclerViewAdapter(items: MutableList<Stack>) :
                             dialog.resultSubject.subscribe { result ->
                                 if (result != null)
                                     controller.deleteStack(position, stack)
-                            }
-                            dialog.show((holder.view.context as Activity).fragmentManager, CardDialog.TAG)
-                            false
-                        }
-            }
-
-            if (!stack.fileName.isEmpty()) {
-                contextMenu.add(0, 0, 1, context.resources.getString(R.string.edit))
-                        .setOnMenuItemClickListener { _ ->
-                            val dialog = StackDialog()
-                            val bundle = Bundle()
-                            bundle.putString(context.resources.getString(R.string.bundle_stack), Gson().toJson(stack))
-                            bundle.putString(context.resources.getString(R.string.bundle_tags), Gson().toJson(controller.tags))
-                            dialog.arguments = bundle
-                            dialog.isCancelable = false
-                            dialog.stackAddSubject.subscribe { stack ->
-                                controller.updateStack(position, stack)
                             }
                             dialog.show((holder.view.context as Activity).fragmentManager, CardDialog.TAG)
                             false

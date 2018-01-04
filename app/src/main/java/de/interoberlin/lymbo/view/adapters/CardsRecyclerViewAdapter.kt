@@ -81,7 +81,21 @@ class CardsRecyclerViewAdapter(items: MutableList<Card>) :
         val card = filteredList[position]
 
         holder.rlContent?.setOnCreateContextMenuListener { contextMenu: ContextMenu, _, _ ->
-            contextMenu.add(0, 0, 0, context.resources.getString(R.string.delete))
+            contextMenu.add(0, 0, 0, context.resources.getString(R.string.edit))
+                    .setOnMenuItemClickListener { _ ->
+                        val dialog = CardDialog()
+                        val bundle = Bundle()
+                        bundle.putString(context.resources.getString(R.string.bundle_card), Gson().toJson(card))
+                        bundle.putString(context.resources.getString(R.string.bundle_tags), Gson().toJson(controller.tags))
+                        dialog.arguments = bundle
+                        dialog.isCancelable = false
+                        dialog.cardAddSubject.subscribe { card ->
+                            controller.updateCard(position, card)
+                        }
+                        dialog.show((holder.view?.context as Activity).fragmentManager, CardDialog.TAG)
+                        false
+                    }
+            contextMenu.add(0, 0, 1, context.resources.getString(R.string.delete))
                     .setOnMenuItemClickListener { _ ->
                         val dialog = ConfirmationDialog()
                         val bundle = Bundle()
@@ -94,20 +108,6 @@ class CardsRecyclerViewAdapter(items: MutableList<Card>) :
                         dialog.resultSubject.subscribe { result ->
                             if (result != null)
                                 controller.deleteCard(position)
-                        }
-                        dialog.show((holder.view?.context as Activity).fragmentManager, CardDialog.TAG)
-                        false
-                    }
-            contextMenu.add(0, 0, 1, context.resources.getString(R.string.edit))
-                    .setOnMenuItemClickListener { _ ->
-                        val dialog = CardDialog()
-                        val bundle = Bundle()
-                        bundle.putString(context.resources.getString(R.string.bundle_card), Gson().toJson(card))
-                        bundle.putString(context.resources.getString(R.string.bundle_tags), Gson().toJson(controller.tags))
-                        dialog.arguments = bundle
-                        dialog.isCancelable = false
-                        dialog.cardAddSubject.subscribe { card ->
-                            controller.updateCard(position, card)
                         }
                         dialog.show((holder.view?.context as Activity).fragmentManager, CardDialog.TAG)
                         false

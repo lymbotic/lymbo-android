@@ -9,6 +9,8 @@ import com.google.gson.JsonSyntaxException
 import de.interoberlin.lymbo.App
 import de.interoberlin.lymbo.App.Companion.context
 import de.interoberlin.lymbo.R
+import de.interoberlin.lymbo.model.Card
+import de.interoberlin.lymbo.model.Side
 import de.interoberlin.lymbo.model.Stack
 import de.interoberlin.lymbo.model.Tag
 import io.reactivex.subjects.PublishSubject
@@ -245,7 +247,12 @@ class StacksController private constructor() {
     private fun getStackFromInputStream(inputStream: InputStream): Stack? {
         try {
             val content = IOUtils.toString(inputStream, "UTF-8")
-            return Gson().fromJson(content, Stack::class.java)
+
+            return if (content.trim().startsWith('{')) {
+                parseJsonLymboFile(content)
+            } else {
+                parseCsvLymboFile(content)
+            }
         } catch (e: IOException) {
             e.printStackTrace()
         } catch (e: IllegalStateException) {
@@ -255,6 +262,37 @@ class StacksController private constructor() {
         }
 
         return null
+    }
+
+    /**
+     * Converts a JSON string in a stack
+     */
+    private fun parseJsonLymboFile(content: String): Stack =
+            Gson().fromJson(content, Stack::class.java)
+
+    /**
+     * Converts a CSV string to a stack
+     */
+    private fun parseCsvLymboFile(content: String): Stack {
+        val stack = Stack()
+        stack.id = UUID.randomUUID().toString()
+        stack.title = "stack ${stack.id}"
+
+        content.split('\n').forEach {
+            val vs: List<String> = it.split(',')
+
+            val card = Card()
+            card.id = UUID.randomUUID().toString()
+            card.sides.add(Side(vs[0].trim()))
+            card.sides.add(Side(vs[1].trim()))
+            card.tags = vs.subList(2, vs.size)
+                    .map({ Tag(it.trim(), true) })
+                    .toMutableList()
+
+            stack.cards.add(card)
+        }
+
+        return stack
     }
 
     /**
