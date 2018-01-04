@@ -64,6 +64,7 @@ class EditableTagsArrayAdapter(context: Context, resource: Int, items: MutableLi
         holder.cbChecked?.setOnClickListener { tag.checked = holder.cbChecked?.isChecked ?: false }
         holder.etValue?.setText(tag.value)
         holder.etValue?.isFocusable = position >= c
+        holder.etValue?.setSelection(tag.value.length)
         holder.etValue?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(e: Editable?) {
                 val tagValue = e.toString().trim()
