@@ -2,6 +2,8 @@
 
 [![Lymbo logo](https://github.com/florianschwanz/lymbo-android/blob/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png)](https://github.com/florianschwanz/lymbo-android/blob/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png)
 
+Note that this app is developed for Angular in parallel. See [https://github.com/florianschwanz/lymbo-ng](https://github.com/florianschwanz/lymbo-ng) for more information.
+
 ## Purpose
 
 Lymbo is an Android application that helps you learn new languages by using digital flash cards.
